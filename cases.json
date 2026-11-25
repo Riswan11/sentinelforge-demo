@@ -144,7 +144,53 @@
       "evidence_ids": [
         "access-key-03"
       ]
-    }
+    },
+    "records": [
+      {
+        "eventID": "access-key-01",
+        "eventTime": "2025-06-12T03:14:00+00:00",
+        "eventName": "AssumeRole",
+        "userIdentity": {
+          "arn": "arn:aws:iam::123456789012:user/build-service"
+        },
+        "requestParameters": {
+          "roleArn": "arn:aws:iam::123456789012:role/ExampleAdmin"
+        }
+      },
+      {
+        "eventID": "access-key-02",
+        "eventTime": "2025-06-12T03:19:00+00:00",
+        "eventName": "GetObject",
+        "userIdentity": {
+          "arn": "arn:aws:iam::123456789012:user/build-service"
+        },
+        "requestParameters": {
+          "bucketName": "example-finance-archive"
+        }
+      },
+      {
+        "eventID": "access-key-03",
+        "eventTime": "2025-06-12T03:24:00+00:00",
+        "eventName": "CreateAccessKey",
+        "userIdentity": {
+          "arn": "arn:aws:iam::123456789012:user/build-service"
+        },
+        "requestParameters": {
+          "userName": "build-service"
+        }
+      },
+      {
+        "eventID": "access-key-04",
+        "eventTime": "2025-06-12T03:29:00+00:00",
+        "eventName": "AttachUserPolicy",
+        "userIdentity": {
+          "arn": "arn:aws:iam::123456789012:user/build-service"
+        },
+        "requestParameters": {
+          "policyArn": "arn:aws:iam::123456789012:policy/ExampleDeployment"
+        }
+      }
+    ]
   },
   {
     "slug": "deployment",
@@ -230,6 +276,43 @@
         "arn:aws:iam::123456789012:role/ExampleDeployment"
       ]
     },
-    "action": null
+    "action": null,
+    "records": [
+      {
+        "eventID": "deployment-01",
+        "eventTime": "2025-06-12T03:02:00+00:00",
+        "eventName": "AssumeRole",
+        "userIdentity": {
+          "arn": "arn:aws:iam::123456789012:user/build-service"
+        },
+        "requestParameters": {
+          "roleArn": "arn:aws:iam::123456789012:role/ExampleDeployment"
+        }
+      },
+      {
+        "eventID": "deployment-02",
+        "eventTime": "2025-06-12T03:04:00+00:00",
+        "eventName": "UpdateService",
+        "userIdentity": {
+          "arn": "arn:aws:iam::123456789012:user/build-service"
+        },
+        "requestParameters": {
+          "service": "example-api"
+        }
+      },
+      {
+        "eventID": "deployment-03",
+        "eventTime": "2025-06-12T03:05:00+00:00",
+        "eventName": "DescribeServices",
+        "userIdentity": {
+          "arn": "arn:aws:iam::123456789012:user/build-service"
+        },
+        "requestParameters": {
+          "services": [
+            "example-api"
+          ]
+        }
+      }
+    ]
   }
 ]

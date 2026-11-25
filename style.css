@@ -28,7 +28,14 @@ button { cursor: pointer; }
 button:hover { border-color: var(--accent); }
 button[aria-current="true"] { color: var(--accent); border-color: var(--accent); background: #173335; }
 nav button { text-align: left; }
-button:focus-visible, select:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+input, textarea { width: 100%; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); padding: 8px; border-radius: 8px; }
+textarea { resize: vertical; }
+#intake { margin-top: 18px; }
+.field-help { font-size: .875rem; margin: 8px 0 12px; }
+button:disabled { opacity: .6; cursor: default; }
+#notes { display: block; margin-bottom: 10px; }
+#scope, #targets { margin-top: 6px; }
 .report { padding: clamp(16px, 3vw, 28px); }
 .report-heading { display: flex; gap: 12px; flex-wrap: wrap; align-items: start; justify-content: space-between; }
 .mono { font: .875rem/1.5 ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
