@@ -1,0 +1,235 @@
+[
+  {
+    "slug": "access-key",
+    "context": "A build service account made several calls during an unexpected window. Review the sequence and decide whether to escalate.",
+    "title": "Unexpected access key activity",
+    "principal": "arn:aws:iam::123456789012:user/build-service",
+    "plan": [
+      "Match the supplied events to the principal",
+      "Correlate successful calls and review possible persistence"
+    ],
+    "evidence": [
+      {
+        "id": "access-key-01",
+        "source": "aws.cloudtrail",
+        "observed_at": "2025-06-12T03:14:00+00:00",
+        "event": "AssumeRole",
+        "principal": "arn:aws:iam::123456789012:user/build-service",
+        "target": "arn:aws:iam::123456789012:role/ExampleAdmin",
+        "query": "Exact principal ARN match against supplied CloudTrail records",
+        "integrity_hash": "sha256:d23ac298ad91c58fcb82107e06051ed5525a514c8d658f7f80119c30fa24ac76"
+      },
+      {
+        "id": "access-key-02",
+        "source": "aws.cloudtrail",
+        "observed_at": "2025-06-12T03:19:00+00:00",
+        "event": "GetObject",
+        "principal": "arn:aws:iam::123456789012:user/build-service",
+        "target": "example-finance-archive",
+        "query": "Exact principal ARN match against supplied CloudTrail records",
+        "integrity_hash": "sha256:e605e76b60eb84bfbccb73f3afaf1fa9e27af75d75aadf25c4b089a703e7f937"
+      },
+      {
+        "id": "access-key-03",
+        "source": "aws.cloudtrail",
+        "observed_at": "2025-06-12T03:24:00+00:00",
+        "event": "CreateAccessKey",
+        "principal": "arn:aws:iam::123456789012:user/build-service",
+        "target": "build-service",
+        "query": "Exact principal ARN match against supplied CloudTrail records",
+        "integrity_hash": "sha256:dc02c1cdebb2f374726ef74caa3c44d67b38f92059d4d299325d798858f81a87"
+      },
+      {
+        "id": "access-key-04",
+        "source": "aws.cloudtrail",
+        "observed_at": "2025-06-12T03:29:00+00:00",
+        "event": "AttachUserPolicy",
+        "principal": "arn:aws:iam::123456789012:user/build-service",
+        "target": "arn:aws:iam::123456789012:policy/ExampleDeployment",
+        "query": "Exact principal ARN match against supplied CloudTrail records",
+        "integrity_hash": "sha256:2db5da7368b8dcb5ea41fc6339e9f63d6e471a6f3c1ac325d2dfad364b3e5bdc"
+      }
+    ],
+    "graph": [
+      {
+        "from": "arn:aws:iam::123456789012:user/build-service",
+        "relationship": "CALLED",
+        "to": "access-key-01"
+      },
+      {
+        "from": "arn:aws:iam::123456789012:user/build-service",
+        "relationship": "CALLED",
+        "to": "access-key-02"
+      },
+      {
+        "from": "arn:aws:iam::123456789012:user/build-service",
+        "relationship": "CALLED",
+        "to": "access-key-03"
+      },
+      {
+        "from": "arn:aws:iam::123456789012:user/build-service",
+        "relationship": "CALLED",
+        "to": "access-key-04"
+      },
+      {
+        "from": "access-key-01",
+        "relationship": "TARGETED",
+        "to": "arn:aws:iam::123456789012:role/ExampleAdmin"
+      },
+      {
+        "from": "access-key-02",
+        "relationship": "TARGETED",
+        "to": "example-finance-archive"
+      },
+      {
+        "from": "access-key-03",
+        "relationship": "TARGETED",
+        "to": "build-service"
+      },
+      {
+        "from": "access-key-04",
+        "relationship": "TARGETED",
+        "to": "arn:aws:iam::123456789012:policy/ExampleDeployment"
+      }
+    ],
+    "assessment": {
+      "severity": "high",
+      "score": 70,
+      "score_max": 70,
+      "claims": [
+        {
+          "summary": "Role assumption observed",
+          "evidence_ids": [
+            "access-key-01"
+          ],
+          "possible_attack_technique": "T1078"
+        },
+        {
+          "summary": "Successful object read recorded",
+          "evidence_ids": [
+            "access-key-02"
+          ],
+          "possible_attack_technique": null
+        },
+        {
+          "summary": "Access key creation recorded",
+          "evidence_ids": [
+            "access-key-03"
+          ],
+          "possible_attack_technique": "T1098.001"
+        },
+        {
+          "summary": "User policy attachment recorded",
+          "evidence_ids": [
+            "access-key-04"
+          ],
+          "possible_attack_technique": "T1098"
+        }
+      ],
+      "open_questions": [
+        "Was the activity authorized?",
+        "What happened outside the supplied records?"
+      ],
+      "observed_targets": [
+        "arn:aws:iam::123456789012:policy/ExampleDeployment",
+        "arn:aws:iam::123456789012:role/ExampleAdmin",
+        "build-service",
+        "example-finance-archive"
+      ]
+    },
+    "action": {
+      "id": "review-access-key",
+      "summary": "Verify the new key and its owners before considering containment.",
+      "mode": "advisory",
+      "evidence_ids": [
+        "access-key-03"
+      ]
+    }
+  },
+  {
+    "slug": "deployment",
+    "context": "The synthetic change calendar shows an approved release at 03:00 UTC. Compare the recorded activity with that context before setting a disposition.",
+    "title": "Scheduled deployment activity",
+    "principal": "arn:aws:iam::123456789012:user/build-service",
+    "plan": [
+      "Match the supplied events to the principal",
+      "Correlate successful calls and review possible persistence"
+    ],
+    "evidence": [
+      {
+        "id": "deployment-01",
+        "source": "aws.cloudtrail",
+        "observed_at": "2025-06-12T03:02:00+00:00",
+        "event": "AssumeRole",
+        "principal": "arn:aws:iam::123456789012:user/build-service",
+        "target": "arn:aws:iam::123456789012:role/ExampleDeployment",
+        "query": "Exact principal ARN match against supplied CloudTrail records",
+        "integrity_hash": "sha256:cab352a9104451706aeb916790e3594a7a8120fe00e6af4def1d536fdfe02d8e"
+      },
+      {
+        "id": "deployment-02",
+        "source": "aws.cloudtrail",
+        "observed_at": "2025-06-12T03:04:00+00:00",
+        "event": "UpdateService",
+        "principal": "arn:aws:iam::123456789012:user/build-service",
+        "target": null,
+        "query": "Exact principal ARN match against supplied CloudTrail records",
+        "integrity_hash": "sha256:42e52afd65544e673be9c18753ead5ba516ea21689eee82eb9fd3fe25ca6de69"
+      },
+      {
+        "id": "deployment-03",
+        "source": "aws.cloudtrail",
+        "observed_at": "2025-06-12T03:05:00+00:00",
+        "event": "DescribeServices",
+        "principal": "arn:aws:iam::123456789012:user/build-service",
+        "target": null,
+        "query": "Exact principal ARN match against supplied CloudTrail records",
+        "integrity_hash": "sha256:7519c359fca82fff8e7935e1619eb3f3b1092e1b28d12728be9a8ec7c87d9d41"
+      }
+    ],
+    "graph": [
+      {
+        "from": "arn:aws:iam::123456789012:user/build-service",
+        "relationship": "CALLED",
+        "to": "deployment-01"
+      },
+      {
+        "from": "arn:aws:iam::123456789012:user/build-service",
+        "relationship": "CALLED",
+        "to": "deployment-02"
+      },
+      {
+        "from": "arn:aws:iam::123456789012:user/build-service",
+        "relationship": "CALLED",
+        "to": "deployment-03"
+      },
+      {
+        "from": "deployment-01",
+        "relationship": "TARGETED",
+        "to": "arn:aws:iam::123456789012:role/ExampleDeployment"
+      }
+    ],
+    "assessment": {
+      "severity": "low",
+      "score": 20,
+      "score_max": 70,
+      "claims": [
+        {
+          "summary": "Role assumption observed",
+          "evidence_ids": [
+            "deployment-01"
+          ],
+          "possible_attack_technique": "T1078"
+        }
+      ],
+      "open_questions": [
+        "Was the activity authorized?",
+        "What happened outside the supplied records?"
+      ],
+      "observed_targets": [
+        "arn:aws:iam::123456789012:role/ExampleDeployment"
+      ]
+    },
+    "action": null
+  }
+]

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore two synthetic AWS investigations in an interactive SentinelForge portfolio demo.">
+  <title>SentinelForge · Investigation Demo</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="demo.js"></script>
+</head>
+<body>
+  <header class="top"><div class="wrap bar"><strong>SentinelForge</strong><span>Portfolio demo</span></div></header>
+  <main class="wrap">
+    <div class="intro">
+      <h1>Investigate AWS activity</h1>
+      <p>Open a synthetic CloudTrail case, trace the evidence, and record your disposition.</p>
+    </div>
+    <div class="workspace">
+      <aside class="panel case-panel" aria-labelledby="cases-title">
+        <h2 id="cases-title">Cases</h2>
+        <nav id="cases" aria-label="Demo investigations"></nav>
+      </aside>
+      <article class="panel report" aria-labelledby="case-title">
+        <p id="status" role="status">Loading investigations…</p>
+        <div id="report" hidden>
+          <div class="report-heading">
+            <div><h2 id="case-title"></h2><p id="principal" class="mono"></p></div>
+            <span id="severity" class="badge"></span>
+          </div>
+          <p id="context"></p>
+          <section class="report-section"><h3>Evidence-backed findings</h3><ul id="findings" class="findings"></ul></section>
+          <section class="report-section"><h3>Event timeline <span class="heading-note">UTC</span></h3><ol id="timeline"></ol></section>
+          <section class="report-section"><h3>Analyst disposition</h3><p id="advisory"></p>
+            <form id="review">
+              <label for="disposition">Decision</label>
+              <div class="actions">
+                <select id="disposition" required>
+                  <option value="">Choose a disposition</option><option value="benign">Benign</option>
+                  <option value="suspicious">Suspicious</option><option value="confirmed">Confirmed</option>
+                  <option value="inconclusive">Inconclusive</option>
+                </select>
+                <button class="primary" type="submit">Save decision</button>
+                <button id="reset" type="button">Reset</button>
+              </div>
+            </form>
+            <p id="decision-status" role="status"></p>
+          </section>
+        </div>
+      </article>
+    </div>
+    <section class="architecture">
+      <h2>How it works</h2>
+      <p>The Python engine normalized the sample events, built the timeline, and computed the triage score from deterministic rules. This page displays those generated reports and keeps simulated analyst decisions in your browser.</p>
+    </section>
+  </main>
+</body>
+</html>
